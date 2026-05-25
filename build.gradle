@@ -1,0 +1,120 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+}
+
+version = "26.1.0.2"
+group = "blamejared.clumps"
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    proguard
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    proguard 'com.guardsquare:proguard-base:7.6.1'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    it.options.debug = false
+    it.options.compilerArgs += ['-g:none']
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+// remapJar no longer exists in Loom 1.16+ (no obfuscation), alias it to jar
+tasks.register('remapJar') {
+    dependsOn jar
+}
+
+// ProGuard obfuscation task - properly creates full JAR
+tasks.register('obfuscateJar', JavaExec) {
+    dependsOn jar
+    group = 'build'
+    description = 'Obfuscates the JAR using ProGuard'
+
+    def inputJar = tasks.jar.archiveFile.get().asFile
+    def outputJar = new File(inputJar.parent, inputJar.name.replaceFirst('\\.jar$', '-obfuscated.jar'))
+    def tempDir = new File(buildDir, 'tmp/proguard-classes')
+    def proguardCfg = file('proguard.cfg')
+    def mappingsFile = new File(buildDir, 'tmp/proguard-mappings.txt')
+
+    inputs.file inputJar
+    inputs.file proguardCfg
+    outputs.file outputJar
+
+    classpath = configurations.proguard
+    mainClass = 'proguard.ProGuard'
+
+    doFirst {
+        // Clean and create temp dir
+        if (tempDir.exists()) tempDir.deleteDir()
+        tempDir.mkdirs()
+
+        // Extract ALL classes from the JAR to tempDir
+        ant.unzip(src: inputJar, dest: tempDir) {
+            patternset {
+                include(name: '**/*.class')
+            }
+        }
+
+        args = [
+            '@' + proguardCfg.absolutePath,
+            '-injars', tempDir.absolutePath,
+            '-outjars', outputJar.absolutePath,
+            '-printmapping', mappingsFile.absolutePath,
+            '-ignorewarnings',
+            '-dontnote',
+            '-dontwarn'
+        ]
+    }
+
+    doLast {
+        // Extract resources from original JAR and merge into obfuscated JAR
+        def tempMerge = new File(buildDir, 'tmp/proguard-merge')
+        if (tempMerge.exists()) tempMerge.deleteDir()
+        tempMerge.mkdirs()
+
+        // Extract resources (non-class files) from original JAR
+        ant.unzip(src: inputJar, dest: tempMerge) {
+            patternset {
+                exclude(name: '**/*.class')
+            }
+        }
+
+        // Extract obfuscated classes to merge dir (overwrite)
+        ant.unzip(src: outputJar, dest: tempMerge)
+
+        // Re-pack the final JAR
+        ant.zip(destfile: outputJar) {
+            fileset(dir: tempMerge)
+        }
+
+        // Clean up
+        tempMerge.deleteDir()
+        tempDir.deleteDir()
+    }
+}
+
+tasks.register('buildObfuscated') {
+    dependsOn obfuscateJar
+    group = 'build'
+    description = 'Builds and obfuscates the JAR'
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}

@@ -1,0 +1,32 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+    "ANTHROPIC_AUTH_TOKEN": "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",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_MODEL": "tencent/hy3-preview:free"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(jar tf *)",
+      "Bash(jar xf *)",
+      "Bash(javap -p \"/tmp/net/minecraft/client/renderer/feature/NameTagFeatureRenderer.class\")",
+      "Bash(mkdir -p /tmp/mc_classes)",
+      "Read(//tmp/**)",
+      "Bash(ls -la net/minecraft/client/renderer/feature/)",
+      "Bash(javap -p -verbose \"/tmp/mc_classes/net/minecraft/client/renderer/feature/NameTagFeatureRenderer.class\")",
+      "Bash(grep -v \"^$\\\\|//\")",
+      "Bash(javap -p \"/tmp/mc_classes/net/minecraft/client/renderer/entity/state/PlayerRenderState.class\")",
+      "Bash(javap -p \"net/minecraft/client/renderer/entity/state/PlayerRenderState.class\")",
+      "Bash(javap -p \"net/minecraft/client/renderer/entity/state/LivingEntityRenderState.class\")",
+      "Bash(javap -p \"net/minecraft/client/gui/GuiGraphicsExtractor.class\")",
+      "Bash(javap -p \"net/minecraft/client/renderer/RenderPipelines.class\")",
+      "Bash(grep \"\\\\.png$\")",
+      "Bash(./gradlew compileJava)",
+      "Bash(./gradlew build *)",
+      "Bash(javap -p \"net/minecraft/gizmos/Gizmos.class\")",
+      "Bash(javap -cp \".gradle\\\\loom-cache\\\\minecraftMaven\\\\net\\\\minecraft\\\\minecraft-merged-a26c9a9f3c\\\\26.1\\\\minecraft-merged-a26c9a9f3c-26.1.jar\" net.minecraft.gizmos.Gizmos)",
+      "Bash(javap *)"
+    ]
+  },
+  "spinnerTipsEnabled": false
+}

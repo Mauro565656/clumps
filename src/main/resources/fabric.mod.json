@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "clumps",
+  "version": "26.1.0.2",
+  "name": "Clumps",
+  "description": "Clumps XP orbs together to reduce lag and save your frame rate!",
+  "authors": ["Jaredlll08"],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/clumps",
+    "sources": "https://github.com/jaredlll08/Clumps",
+    "issues": "https://github.com/jaredlll08/Clumps/issues"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "icon": "icon.png",
+  "entrypoints": {
+    "main": ["blamejared.clumps.Clumps"],
+    "client": ["blamejared.clumps.ClumpsClient"]
+  },
+  "mixins": [
+    "clumps.mixins.json"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "blamejared.clumps.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "client": [
+    "EntityGlowMixin",
+    "LevelRendererMixin",
+    "DebugHitboxMixin",
+    "DebugRendererAccessor",
+    "DebugRendererInitMixin",
+    "HitboxMixin",
+    "ReachMixin",
+    "FreecamMixin",
+    "FreecamEntityMixin",
+    "FreecamPlayerMixin",
+    "PingSpoofMixin",
+    "MinecraftAttackMixin",
+    "GlowColorMixin",
+    "NametagsMixin",
+    "AntiInvisMixin",
+    "BetterTooltipsMixin",
+    "ClickCrystalsMixin",
+    "KeybindHideMixin",
+    "TrajectoriesMixin",
+    "AutoTotemContainerMixin",
+    "PlayerEspDebugRendererMixin",
+    "NametagDebugRendererMixin",
+    "LogoutSpotsDebugRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
